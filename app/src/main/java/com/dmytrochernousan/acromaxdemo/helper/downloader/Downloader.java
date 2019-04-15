@@ -68,7 +68,7 @@ class Downloader {
 
     private static File getTempFile(Context context) throws IOException {
         File file;
-        file = File.createTempFile("descriptor", null, context.getCacheDir());
+        file = File.createTempFile("info", null, context.getCacheDir());
         return file;
     }
 }

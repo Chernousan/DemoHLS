@@ -18,9 +18,9 @@ import android.widget.TextView;
 
 import com.dmytrochernousan.acromaxdemo.helper.common.CustomImageView;
 import com.dmytrochernousan.acromaxdemo.helper.common.States;
+import com.dmytrochernousan.acromaxdemo.helper.deleter.CacheCleaner;
 import com.dmytrochernousan.acromaxdemo.helper.downloader.Parser;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -30,7 +30,6 @@ public class MainActivity extends AppCompatActivity implements  MediaPlayer.OnCo
     private MediaPlayer player;
     private TextView spinnerText;
     private ProgressBar spinnerBar;
-    private File chunkFile;
     private int xDelta;
     private ViewGroup mainLayout;
     ImageView fetchImageView;
@@ -166,16 +165,12 @@ public class MainActivity extends AppCompatActivity implements  MediaPlayer.OnCo
                 case FINISH_CHUNK_DOWNLOAD: {
                     spinnerBar.setVisibility(View.INVISIBLE);
                     spinnerText.setVisibility(View.INVISIBLE);
-                    chunkFile= (File) inputMessage.obj;
                     player.start();
                     pauseImageView.setVisibility(View.VISIBLE);
                     break;
                 }
                 case PLAYER_DONE: {
-                    if(chunkFile != null){
-                        boolean deleted = chunkFile.delete();
-                        System.out.println(deleted ? "true": "false ");
-                    }
+                    CacheCleaner.deleteCache(MainActivity.this);
                     playImageView.setVisibility(View.INVISIBLE);
                     pauseImageView.setVisibility(View.INVISIBLE);
                     spinnerText.setVisibility(View.VISIBLE);
@@ -188,7 +183,6 @@ public class MainActivity extends AppCompatActivity implements  MediaPlayer.OnCo
                             fetchImageView.setVisibility(View.VISIBLE);
                         }
                     }, 2000);
-
                     break;
                 }
             }
