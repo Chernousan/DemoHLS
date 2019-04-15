@@ -5,4 +5,5 @@
     <string name="fatsh">fatch</string>
     <string name="percentage">%1$d%% \n Chunk %2$d</string>
     <string name="loading">Loading…</string>
+    <string name="clearCache">Clear cache…</string>
 </resources>

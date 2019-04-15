@@ -24,15 +24,17 @@
         <ImageView
             android:id="@+id/fetch"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_centerInParent="true"
+            android:layout_height="50dp"
+            android:scaleType="centerCrop"
             app:srcCompat="@android:drawable/stat_sys_download_done"
             android:contentDescription="@string/fatsh" />
 
         <ImageView
             android:id="@+id/play"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
+            android:scaleType="centerCrop"
             android:layout_centerInParent="true"
             app:srcCompat="@android:drawable/ic_media_play"
             android:visibility="invisible"
@@ -42,7 +44,8 @@
             android:id="@+id/pause"
             android:contentDescription="@string/pause"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
+            android:scaleType="centerCrop"
             android:layout_centerInParent="true"
             android:background="@android:drawable/ic_media_pause"
             android:visibility="invisible"/>

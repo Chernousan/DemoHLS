@@ -178,7 +178,17 @@ public class MainActivity extends AppCompatActivity implements  MediaPlayer.OnCo
                     }
                     playImageView.setVisibility(View.INVISIBLE);
                     pauseImageView.setVisibility(View.INVISIBLE);
-                    fetchImageView.setVisibility(View.VISIBLE);
+                    spinnerText.setVisibility(View.VISIBLE);
+                    spinnerText.setText(R.string.clearCache);
+                    final Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            spinnerText.setVisibility(View.INVISIBLE);
+                            fetchImageView.setVisibility(View.VISIBLE);
+                        }
+                    }, 2000);
+
                     break;
                 }
             }
