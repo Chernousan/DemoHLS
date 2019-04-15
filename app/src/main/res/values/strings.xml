@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">acromaxDemo</string>
+    <string name="play">play</string>
+    <string name="pause">pause</string>
+    <string name="fatsh">fatch</string>
+    <string name="percentage">%1$d%% \n Chunk %2$d</string>
+    <string name="loading">Loading…</string>
+</resources>
