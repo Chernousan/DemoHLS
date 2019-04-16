@@ -8,6 +8,8 @@ import android.os.Looper;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,10 +33,11 @@ public class MainActivity extends AppCompatActivity implements  MediaPlayer.OnCo
     private TextView spinnerText;
     private ProgressBar spinnerBar;
     private int xDelta;
-    private ViewGroup mainLayout;
+    private int yDelta;
     ImageView fetchImageView;
     ImageView playImageView;
     CustomImageView pauseImageView;
+    Boolean controlRedy =  false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +45,6 @@ public class MainActivity extends AppCompatActivity implements  MediaPlayer.OnCo
         setContentView(R.layout.activity_main);
 
         fetchImageView = findViewById(R.id.fetch);
-
         fetchImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -52,58 +54,58 @@ public class MainActivity extends AppCompatActivity implements  MediaPlayer.OnCo
             }
         });
 
-        playImageView = findViewById(R.id.play);
-        playImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                player.start();
-                playImageView.setVisibility(View.INVISIBLE);
-                pauseImageView.setVisibility(View.VISIBLE);
-            }
-        });
-
-        mainLayout = findViewById(R.id.relativeLayout);
-        pauseImageView = mainLayout.findViewById(R.id.pause);
-        pauseImageView.setOnTouchListener(new View.OnTouchListener() {
+        final ViewGroup parentLayout = findViewById(R.id.parentrelativeLayout);
+        ViewGroup mainLayout = parentLayout.findViewById(R.id.relativeLayout);
+        mainLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 view.performClick();
                 RelativeLayout.LayoutParams layoutParams;
                 final int x = (int) motionEvent.getRawX();
+                final int y = (int) motionEvent.getRawY();
 
                 switch (motionEvent.getAction() & MotionEvent.ACTION_MASK) {
                     case MotionEvent.ACTION_DOWN:
                         layoutParams = (RelativeLayout.LayoutParams)
                                 view.getLayoutParams();
                         xDelta = x - layoutParams.leftMargin;
+                        yDelta = y - layoutParams.topMargin;
                         break;
+
                     case MotionEvent.ACTION_UP:
-                        layoutParams = (RelativeLayout.LayoutParams) view
-                                .getLayoutParams();
-                        if (layoutParams.leftMargin < 30) {
-                            player.pause();
-                            pauseImageView.setVisibility(View.INVISIBLE);
-                            playImageView.setVisibility(View.VISIBLE);
-                        } else {
-                            speed(1f);
+                        if (controlRedy) {
+                                pause();
                         }
-                        layoutParams.leftMargin = 0;
-                        view.setLayoutParams(layoutParams);
                         break;
                     case MotionEvent.ACTION_MOVE:
                         layoutParams = (RelativeLayout.LayoutParams) view
                                 .getLayoutParams();
-                        if (layoutParams.leftMargin > 30) {
-                            speed(2f);
-                        }
                         layoutParams.leftMargin = x - xDelta;
+                        layoutParams.topMargin = y - yDelta;
                         view.setLayoutParams(layoutParams);
+
+                        DisplayMetrics metrics = new DisplayMetrics();
+                        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+                        int width = metrics.widthPixels;
+                        int hight = metrics.heightPixels;
+                        if (controlRedy) {
+                            if (width - (Math.abs(layoutParams.leftMargin)) < 400 || hight - (Math.abs(layoutParams.topMargin)) < 400) {
+                                speed(2f);
+                            } else {
+                                speed(1f);
+                            }
+                        }
                         break;
                 }
-                mainLayout.invalidate();
+                parentLayout.invalidate();
                 return true;
             }
         });
+
+        playImageView = mainLayout.findViewById(R.id.play);
+
+        pauseImageView = mainLayout.findViewById(R.id.pause);
+
         spinnerText = findViewById(R.id.progress);
         player = MediaPlayer.create(this, R.raw.audio_sample);
         player.setLooping(false);
@@ -118,6 +120,18 @@ public class MainActivity extends AppCompatActivity implements  MediaPlayer.OnCo
                 player.setPlaybackParams(player.getPlaybackParams().setSpeed(speed));
             }
         }
+    }
+
+    void pause () {
+            if (player.isPlaying()) {
+                player.pause();
+                playImageView.setVisibility(View.VISIBLE);
+                pauseImageView.setVisibility(View.INVISIBLE);
+            } else {
+                player.start();
+                playImageView.setVisibility(View.INVISIBLE);
+                pauseImageView.setVisibility(View.VISIBLE);
+            }
     }
 
 
@@ -166,6 +180,7 @@ public class MainActivity extends AppCompatActivity implements  MediaPlayer.OnCo
                     spinnerBar.setVisibility(View.INVISIBLE);
                     spinnerText.setVisibility(View.INVISIBLE);
                     player.start();
+                    controlRedy = true;
                     pauseImageView.setVisibility(View.VISIBLE);
                     break;
                 }
@@ -175,6 +190,7 @@ public class MainActivity extends AppCompatActivity implements  MediaPlayer.OnCo
                     pauseImageView.setVisibility(View.INVISIBLE);
                     spinnerText.setVisibility(View.VISIBLE);
                     spinnerText.setText(R.string.clearCache);
+                    controlRedy = false;
                     final Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
                         @Override

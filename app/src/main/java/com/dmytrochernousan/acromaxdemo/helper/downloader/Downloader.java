@@ -1,6 +1,7 @@
 package com.dmytrochernousan.acromaxdemo.helper.downloader;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -12,6 +13,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 class Downloader {
+    public static String TAG = "LOG";
 
     static File downloadFileInfo(String href, Context context) throws Exception{
         File file;
@@ -42,10 +44,11 @@ class Downloader {
         return file;
     }
 
-    static byte[] downloadChunk(String href, Integer[] byteRange) throws Exception{
+    static byte[] downloadChunk(String href, Integer[] byteRange, Integer index) throws Exception{
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         HttpURLConnection connection = null;
         try {
+            Log.i(TAG, "Chunk download start: " + index);
             URL url = new URL(href);
             connection = (HttpURLConnection) url.openConnection();
             //connection.setRequestProperty("Range", "bytes=" + byteRange[0] + "-" + byteRange[1]);
