@@ -48,7 +48,7 @@ class Downloader {
         try {
             URL url = new URL(href);
             connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestProperty("Range", "bytes=" + byteRange[0] + "-" + byteRange[1]);
+            //connection.setRequestProperty("Range", "bytes=" + byteRange[0] + "-" + byteRange[1]);
             connection.connect();
             InputStream is = connection.getInputStream();
             int nRead;

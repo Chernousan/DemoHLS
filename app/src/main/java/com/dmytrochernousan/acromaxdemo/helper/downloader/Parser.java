@@ -3,6 +3,7 @@ package com.dmytrochernousan.acromaxdemo.helper.downloader;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.util.Log;
 
 import com.dmytrochernousan.acromaxdemo.helper.common.States;
 import com.dmytrochernousan.acromaxdemo.helper.writer.ChunkWriter;
@@ -12,6 +13,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -151,17 +153,22 @@ public class Parser {
 
     private String parseIndex(File file) throws Exception {
         List<String> result = new ArrayList();
+        List<Integer> bitrate = new ArrayList<>();
         BufferedReader b = new BufferedReader(new FileReader(file));
         String readLine;
+        String maxQ = null;
         while ((readLine = b.readLine()) != null) {
             if (readLine.startsWith(AUDIO_TYPE)) {
                 readLine = readLine.substring(readLine.indexOf("URI=") + 4);
+                try {
+                    int end = readLine.indexOf("K_v4");
+                    bitrate.add(parseInt(readLine.substring(6, end)));
+                } catch (Exception e) {}
+                maxQ =  Collections.max(bitrate).toString();
                 result.add(readLine);
             }
         }
-        String fileName = result.get(result.size() - 1);
-        fileName = fileName.substring(1, fileName.length() - 1);
-        return (urlBase + "/" + fileName);
+        return (urlBase + "/" + "hls_a" + maxQ + "K_v4.m3u8" );
     }
 
 
