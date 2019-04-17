@@ -9,7 +9,6 @@ import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,7 +55,9 @@ public class MainActivity extends AppCompatActivity implements  MediaPlayer.OnCo
 
         final ViewGroup parentLayout = findViewById(R.id.parentrelativeLayout);
         ViewGroup mainLayout = parentLayout.findViewById(R.id.relativeLayout);
+        final Boolean[] move = {false};
         mainLayout.setOnTouchListener(new View.OnTouchListener() {
+
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 view.performClick();
@@ -73,9 +74,10 @@ public class MainActivity extends AppCompatActivity implements  MediaPlayer.OnCo
                         break;
 
                     case MotionEvent.ACTION_UP:
-                        if (controlRedy) {
+                        if (controlRedy & !move[0]) {
                                 pause();
                         }
+                        move[0] = false;
                         break;
                     case MotionEvent.ACTION_MOVE:
                         layoutParams = (RelativeLayout.LayoutParams) view
@@ -94,6 +96,7 @@ public class MainActivity extends AppCompatActivity implements  MediaPlayer.OnCo
                             } else {
                                 speed(1f);
                             }
+                            move[0] = true;
                         }
                         break;
                 }
